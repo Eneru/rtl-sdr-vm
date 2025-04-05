@@ -1,0 +1,22 @@
+name: Static Analysis
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+jobs:
+  iac-static-analysis:
+    name: IAC static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run kics Scan
+        uses: checkmarx/kics-github-action@v2.1.6
+        with:
+          disable_secrets: true
+          fail_on: high,medium
+          path: 'ansible,vagrant,.devcontainer/Dockerfile'
+          output_path: kics-results/
+      - name: Display kics results
+        run: |
+          cat kics-results/results.json

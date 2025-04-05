@@ -1,0 +1,61 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+	"name": "Ansible and Vagrant development",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"build": {
+		// Sets the run context to one level up instead of the .devcontainer folder.
+		"context": "..",
+		"dockerfile": "Dockerfile"
+	},
+
+	// Create hooks for gitleaks (rerunning it is not troublesome, and will just do nothing)
+	"postCreateCommand": "pre-commit autoupdate && pre-commit install",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"[ansible]": {
+					"editor.detectIndentation": true,
+					"editor.insertSpaces": true,
+					"editor.tabSize": 2,
+					"editor.quickSuggestions": {
+						"comments": true,
+						"other": true,
+						"strings": true
+					},
+					"editor.autoIndent": "advanced",
+					"editor.formatOnSave": true
+				},
+				"files.associations": {
+					// Ansible
+					"**/defaults/**/*.yml": "yaml",
+					"**/group_vars/**/*": "yaml",
+					"**/host_vars/**/*": "yaml",
+					"**/vars/**/*.yml": "yaml",
+					"**/tasks/**/*.yml": "ansible",
+					"**/handlers/*.yml": "ansible",
+					"**/meta/*.yml": "yaml",
+					"**/roles/**/*.yml": "ansible",
+					"**/playbooks/**/*.yml": "ansible",
+					"**/ansible/**/hosts": "ini",
+					"**/ansible/**/inventory": "ini",
+					"**/ansible/templates/*.j2": "ansible-jinja",
+					"**/molecule/**/*.yml": "ansible",
+					"**/molecule/**/molecule.yml": "yaml",
+					"ansible/ansible.cfg": "ini",
+					"ansible/*.yml": "ansible"
+				},
+				"redhat.telemetry.enabled": false,
+				"telemetry.telemetryLevel": "off",
+				"ansible.python.interpreterPath": "/usr/bin/python3"
+			},
+			"extensions": [
+				// Ansible's extensions
+				"redhat.ansible", // use ansible-linter
+				"redhat.vscode-yaml"
+			]
+		}
+	}
+}
