@@ -22,7 +22,7 @@ jobs:
           cat kics-results/results.json
   vagrant-validation:
     name: Vagrant validation
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - name: Cache Vagrant boxes
