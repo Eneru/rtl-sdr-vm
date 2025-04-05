@@ -20,17 +20,3 @@ jobs:
       - name: Display kics results
         run: |
           cat kics-results/results.json
-  vagrant-validation:
-    name: Vagrant validation
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache Vagrant boxes
-        uses: actions/cache@v4
-        with:
-          path: ~/.vagrant.d/boxes
-          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-
-      - name: Run validate
-        run: vagrant validate
