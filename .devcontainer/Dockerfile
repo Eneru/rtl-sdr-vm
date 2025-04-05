@@ -6,33 +6,34 @@ LABEL org.opencontainers.image.title="Ansible and Vagrant development"
 LABEL org.opencontainers.image.description="Image that embeds every tools needed to develop on the rtl-sdr-vm project."
 LABEL org.opencontainers.image.base.name="debian:bookworm"
 
+USER root
+
 SHELL ["/bin/sh", "-c"]
 
 # Install packages available through apt
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    bash-completion=* \
-    curl=* \
-    git=* \
-    gnupg2=* \
-    iproute2=* \
-    jq=* \
-    lsb-release=* \
-    locales=* \
-    python3 \
-    python3-dev \
-    python3-venv \
-    python3-pip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    bash-completion=1:2* \
+    git=1:2.39.* \
+    iproute2=6.1.* \
+    jq=1.* \
+    lsb-release=12.* \
+    locales=2.* \
+    procps=2:4.0.* \
+    python3=3.11.* \
+    python3-venv=3.11.* \
+    pipx=1.1.* \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="$HOME/.local/bin:$PATH"
 
-# Install pipx
-RUN python3 -m pip install --break-system-packages --no-cache-dir pipx && python3 -m pipx ensurepath
+# Ensure pipx and add autocompletion
+RUN pipx ensurepath && echo 'eval "$(register-python-argcomplete pipx)"' >> $HOME/.bashrc
 
 # Install ansible, ansible auto-completions and ansible tools
-RUN pipx install --include-deps ansible && \
-    pipx inject --include-apps ansible argcomplete && activate-global-python-argcomplete && \
-    pipx install ansible-dev-tools ansible-lint ansible-creator
+RUN pipx install --include-deps ansible-dev-tools==25.4.* && \
+    pipx inject --include-apps ansible-dev-tools argcomplete==3.6.* && \
+    activate-global-python-argcomplete
 
 # Install pre-commit
 RUN pipx install --include-deps pre-commit
@@ -46,3 +47,5 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8"
+
+HEALTHCHECK --interval=1m --timeout=30s --start-period=5m --retries=3 CMD test $(ps aux | grep -i '/bin/sh -c echo Container started trap' | grep -iv 'grep' | wc -l) -ge 1
