@@ -1,0 +1,12 @@
+# Common files / configuration ########################################
+.venv/
+*.pem
+.vscode
+__pycache__/
+*.pyc
+# Vagrant local files #################################################
+.vagrant/
+# Ansible default #####################################################
+*.retry
+# Ansible local files #################################################
+.ansible/
