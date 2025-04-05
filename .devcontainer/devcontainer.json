@@ -57,5 +57,7 @@
 				"redhat.vscode-yaml"
 			]
 		}
-	}
+	},
+
+	"remoteUser": "vscode"
 }
